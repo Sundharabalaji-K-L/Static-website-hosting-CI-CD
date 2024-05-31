@@ -1,0 +1,44 @@
+name: Terraform-destroy
+
+on:
+
+  workflow_dispatch:
+  
+
+jobs:
+
+  terraform-destroy:
+
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        shell: bash
+
+    env:
+
+         AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+
+         AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+
+         AWS_DEFAULT_REGION: us-east-1
+         TF_TOKEN: ${{ secrets.tf_token}}
+
+    steps:
+
+      - uses: actions/checkout@v3
+        with:
+          repository: Sundharabalaji-1Cloudhub/Infra-repo
+          token: ${{secrets.pat_token}}
+
+      - name: Setup Terraform
+
+        uses: hashicorp/setup-terraform@v2
+
+      - name: Terraform init
+        run:  terraform init -reconfigure  -backend-config="./backend.tfvars"
+
+
+      - name: Terraform destroy
+        run: terraform destroy -auto-approve -var="tf_token=${TF_TOKEN}"
+
+       

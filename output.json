@@ -1,0 +1,4 @@
+{
+  "bucket_names": ["my-blog.live-primary","my-blog.live-failover"],
+  "cloudfront_id": "EH9ZLPE22QXQT"
+}

@@ -1,0 +1,48 @@
+name: terraform-apply
+
+on:
+
+  workflow_dispatch:
+  
+
+jobs:
+
+  terraform-apply:
+
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        shell: bash
+
+    env:
+
+         AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+
+         AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+
+         AWS_DEFAULT_REGION: us-east-1
+         TF_TOKEN: ${{ secrets.tf_token}}
+         TF_APP_PASS: ${{ secrets.tf_app_pass}}
+    steps:
+      - name: checkout-Infra-repo
+        uses: actions/checkout@v3
+        with:
+          repository: Sundharabalaji-1Cloudhub/Infra-repo
+          token: ${{secrets.pat_token}}
+
+      - name: Setup Terraform
+
+        uses: hashicorp/setup-terraform@v2
+        
+
+      - name: Terraform init
+        run: terraform init -reconfigure  -backend-config="./backend.tfvars"
+        
+      - name: Terraform apply
+        run: |
+            terraform apply -auto-approve \
+            -var="tf_token=${TF_TOKEN}" \
+            -var="tf_app_pass=${TF_APP_PASS}" 
+
+  
+
